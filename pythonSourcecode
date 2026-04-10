@@ -1,0 +1,87 @@
+import json
+import os
+
+FILE_NAME = "habits.json"
+
+# Load habits from file
+def load_habits():
+    if os.path.exists(FILE_NAME):
+        with open(FILE_NAME, "r") as file:
+            return json.load(file)
+    return []
+
+# Save habits to file
+def save_habits(habits):
+    with open(FILE_NAME, "w") as file:
+        json.dump(habits, file)
+
+# Add habit
+def add_habit(habits):
+    habit = input("Enter new habit: ")
+    if habit:
+        habits.append({"name": habit, "done": False})
+        save_habits(habits)
+        print("Habit added!")
+    else:
+        print("Empty input!")
+
+# View habits
+def view_habits(habits):
+    if not habits:
+        print("No habits found.")
+        return
+    for i, habit in enumerate(habits):
+        status = "✔ Done" if habit["done"] else "✘ Pending"
+        print(f"{i+1}. {habit['name']} - {status}")
+
+# Mark as done
+def mark_done(habits):
+    view_habits(habits)
+    try:
+        index = int(input("Enter habit number to mark done: ")) - 1
+        habits[index]["done"] = True
+        save_habits(habits)
+        print("Marked as done!")
+    except:
+        print("Invalid input!")
+
+# Delete habit
+def delete_habit(habits):
+    view_habits(habits)
+    try:
+        index = int(input("Enter habit number to delete: ")) - 1
+        habits.pop(index)
+        save_habits(habits)
+        print("Habit deleted!")
+    except:
+        print("Invalid input!")
+
+# Main menu
+def main():
+    habits = load_habits()
+
+    while True:
+        print("\n--- Daily Habit Tracker ---")
+        print("1. Add Habit")
+        print("2. View Habits")
+        print("3. Mark Habit as Done")
+        print("4. Delete Habit")
+        print("5. Exit")
+
+        choice = input("Enter choice: ")
+
+        if choice == "1":
+            add_habit(habits)
+        elif choice == "2":
+            view_habits(habits)
+        elif choice == "3":
+            mark_done(habits)
+        elif choice == "4":
+            delete_habit(habits)
+        elif choice == "5":
+            break
+        else:
+            print("Invalid choice!")
+
+if __name__ == "__main__":
+    main()
